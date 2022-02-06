@@ -74,6 +74,7 @@ int main(int argc,char* argv[]){
 
 	while(!quit){
 		/* EVENT CHECK */
+		SDL_Delay(100);
 		while(SDL_PollEvent(&events)){
 			switch(events.type){
 				case SDL_WINDOWEVENT:
@@ -106,7 +107,7 @@ int main(int argc,char* argv[]){
 
 		if(gameState == PLAY){
 			/* RENDERING AND OTHER */
-			SDL_RenderClear(renderer);
+			//SDL_RenderClear(renderer);
 
 			for (int j=0;j<height;j++){
 				for (int i=0;i<width;i++){
