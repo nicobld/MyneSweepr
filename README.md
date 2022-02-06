@@ -29,4 +29,4 @@ or
 - [x] Restarting
 - [ ] HighScores
 - [ ] Multiplayer idk
-- [ ] Always start by clicking on a blank
+- [x] Always start by clicking on a blank
