@@ -53,7 +53,7 @@ int main(int argc,char* argv[]){
 	SDL_SetWindowTitle(window,"MyneSweepr");
 
 	SDL_Surface* gameSurface;
-	if((gameSurface=IMG_Load("img/textures.png"))==NULL){
+	if((gameSurface=SDL_LoadBMP("img/textures.bmp"))==NULL){
 		ERROR_EXIT
 	}
 	SDL_Texture* gameTexture;
@@ -74,7 +74,7 @@ int main(int argc,char* argv[]){
 
 	while(!quit){
 		/* EVENT CHECK */
-		SDL_Delay(100);
+		SDL_Delay(50);
 		while(SDL_PollEvent(&events)){
 			switch(events.type){
 				case SDL_WINDOWEVENT:
