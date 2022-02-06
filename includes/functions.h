@@ -2,13 +2,14 @@
 #define FUNCTIONS_H
 
 #include "tile.h"
+#include "common.h"
 
 extern int discoveredTiles;
 
-void initTiles(Tile** tiles);
-void blankFinder(Tile** tiles, int, int);
-int discoverAdjTile(Tile** tiles, int, int);
+void initTiles();
+void blankFinder(int, int);
+int discoverAdjTile(int, int);
 int checkIfWon();
-int hasEnoughFlags(Tile**,int,int);
+int hasEnoughFlags(int,int);
 
 #endif

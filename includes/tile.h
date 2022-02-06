@@ -45,5 +45,7 @@ private:
 	Type type;
 };
 
+extern Tile** tiles;
+
 
 #endif

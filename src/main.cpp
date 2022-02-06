@@ -9,8 +9,8 @@ int height = 10;
 int bombs = 20;
 int flags = 0;
 int discoveredTiles = 0;
-int firstDiscover = 1;
-
+int firstDiscover = 1; //change this to 0 to turn of the feature of finding a blank tile first try
+Tile **tiles;
 
 struct MouseEvent{
 	SDL_Point point;
@@ -39,6 +39,7 @@ int main(int argc,char* argv[]){
 		}
 	}
 
+	srand(time(NULL));
 
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER)<0){
 		ERROR_EXIT
@@ -66,13 +67,10 @@ int main(int argc,char* argv[]){
 	mouseEvent.clicked = 0;
 	int quit = 0;
 
-
-	Tile **tiles = (Tile **)malloc(sizeof (Tile* ) * height);
-	for(int i=0;i<height;i++)
-		tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
-	initTiles(tiles);;
-
 	GameState gameState = START;
+
+
+
 
 	while(!quit){
 		/* EVENT CHECK */
@@ -83,7 +81,7 @@ int main(int argc,char* argv[]){
 						quit = 1;
 					break;
 				case SDL_MOUSEBUTTONDOWN:
-					if(gameState == END){
+					if(gameState == PAUSE){
 						gameState = START;
 					} else {
 						mouseEvent.point.x = events.button.x;
@@ -97,17 +95,7 @@ int main(int argc,char* argv[]){
 			}
 
 		if(gameState == START){
-			//free the tiles
-			flags = discoveredTiles = 0;
-			for(int i=0;i<height;i++)
-				free(tiles[i]);
-			free(tiles);
-
-			tiles = (Tile **)malloc(sizeof (Tile* ) * height);
-			for(int i=0;i<height;i++)
-				tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
-			initTiles(tiles);
-
+			initTiles();
 			firstDiscover = 1;
 			gameState = PLAY;
 		}
@@ -118,7 +106,6 @@ int main(int argc,char* argv[]){
 
 		if(gameState == PLAY){
 			/* RENDERING AND OTHER */
-			SDL_SetRenderDrawColor(renderer,0,0,0,255);
 			SDL_RenderClear(renderer);
 
 			for (int j=0;j<height;j++){
@@ -128,27 +115,19 @@ int main(int argc,char* argv[]){
 						if(SDL_PointInRect(&mouseEvent.point,&temp)==SDL_TRUE){ //if clicked on the tile
 							if(mouseEvent.button == SDL_BUTTON_LEFT){ 			//if left clicked on tile
 								if(mouseEvent.clicks == 2){
-									if (discoverAdjTile(tiles,i,j) == 1){
+									if (discoverAdjTile(i,j) == 1){
 										gameState = END;
 										SDL_Log("lost, left click to restart");
 									}
 								}else {
-									int discoverValue = tiles[j][i].discover(); 
-									while(discoverValue == -1){ // To be able to find a blank tile first try every time
+									int discoverValue;
+									while((discoverValue = tiles[j][i].discover())==-1){ // To be able to find a blank tile first try every time
 										firstDiscover = 1;
 										flags = discoveredTiles = 0;
-										for(int i=0;i<height;i++)
-											free(tiles[i]);
-										free(tiles);
-
-										tiles = (Tile **)malloc(sizeof (Tile* ) * height);
-										for(int i=0;i<height;i++)
-											tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
-										initTiles(tiles);
-										discoverValue = tiles[j][i].discover();
+										initTiles();
 									}
 									if (discoverValue == 2) 						//if discovered blank
-										blankFinder(tiles,i,j);	
+										blankFinder(i,j);	
 									if (discoverValue == 1){					//if discovered bomb
 										gameState = END;
 										SDL_Log("lost, leftclick to restart");
@@ -168,19 +147,23 @@ int main(int argc,char* argv[]){
 
 			SDL_RenderPresent(renderer);
 			mouseEvent.clicked = 0;
-			if (checkIfWon()){
+			if (checkIfWon())
 				gameState = END;
-				SDL_Log("won ! left click to restart");
-			}
-			//SDL_Log("flags:%d, tiles:%d, size:%d",flags,discoveredTiles,width*height);
 		}
 
 
 		if(gameState == END){
+			flags = discoveredTiles = 0;
+			for(int i=0;i<height;i++)
+				free(tiles[i]);
+			free(tiles);
+			gameState = PAUSE;
+		}
+
+		if(gameState == PAUSE){
+
 		}
 	}
-
-
 
 	SDL_DestroyTexture(gameTexture);
 	SDL_DestroyRenderer(renderer);
