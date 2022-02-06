@@ -22,6 +22,7 @@ or
 ## To Do
 
 - [ ] Timer
+- [ ] Block doubleclick if numer != flags aroud it
 - [ ] Start Menu
 - [ ] End Menu
 - [ ] Restarting
