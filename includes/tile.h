@@ -34,6 +34,7 @@ public:
 	SDL_Rect getTileRect();
 	SDL_Rect getTileImg();
 	int getDiscovered();
+	int getFlaged();
 
 private:
 	SDL_Rect tileRect;

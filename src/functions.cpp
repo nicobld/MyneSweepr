@@ -21,16 +21,17 @@ void initTiles(Tile** tiles){
 	for(int y=0;y<height;y++){
 		for(int x=0;x<width;x++){
 			if(!bt[y][x]){
-				if(x>0 && y>0) bombCount += bt[y-1][x-1];
-				if(x>0) bombCount += bt[y][x-1];
-				if(x>0 && y<height-1) bombCount += bt[y+1][x-1];
+				if(x>0 && y>0) 				bombCount += bt[y-1][x-1];
+				if(x>0) 					bombCount += bt[y][x-1];
+				if(x>0 && y<height-1) 		bombCount += bt[y+1][x-1];
 
-				if(y>0) bombCount += bt[y-1][x];
-				if(y<height-1) bombCount += bt[y+1][x]; 
+				if(y>0) 					bombCount += bt[y-1][x];
+				if(y<height-1) 				bombCount += bt[y+1][x]; 
 
-				if(x<width-1 && y>0) bombCount += bt[y-1][x+1];
-				if(x<width-1) bombCount += bt[y][x+1];
+				if(x<width-1 && y>0) 		bombCount += bt[y-1][x+1];
+				if(x<width-1) 				bombCount += bt[y][x+1];
 				if(x<width-1 && y<height-1) bombCount += bt[y+1][x+1];
+
 				tiles[y][x] = Tile(x*TILE_SIZE,y*TILE_SIZE,(Type)bombCount);
 			} else {
 				tiles[y][x] = Tile(x*TILE_SIZE,y*TILE_SIZE,BOMB);
@@ -106,12 +107,13 @@ void blankFinder(Tile** tiles, int x, int y){
 
 int discoverAdjTile(Tile** tiles, int x, int y){
 	/* Allows the double click on discovered numbers to discover all of the adjacent ones */
+	if(!hasEnoughFlags(tiles,x,y)) return 0;
 	int bomb = 0;
 	int temp;
 	if(x>0 && y>0){
-		if((temp=tiles[y-1][x-1].discover())==2) {
+		if((temp=tiles[y-1][x-1].discover())==2) {//if discover a blank, then blankFinder() it
 			blankFinder(tiles,x-1,y-1);
-		} else if(temp==1) bomb = 1;
+		} else if(temp==1) bomb = 1; //if it's a bomb
 	}
 	if(x>0){
 		if((temp=tiles[y][x-1].discover())==2){
@@ -154,9 +156,28 @@ int discoverAdjTile(Tile** tiles, int x, int y){
 }
 
 
+int hasEnoughFlags(Tile** tiles, int x, int y){
+	int totFlags = 0;
 
-int checkIfEnded(){
-	if(flags+discoveredTiles == width*height)
+	if(x>0 && y>0) 				totFlags += tiles[y-1][x-1].getFlaged();
+	if(x>0) 					totFlags += tiles[y][x-1].getFlaged();
+	if(x>0 && y<height-1) 		totFlags += tiles[y+1][x-1].getFlaged();
+
+	if(y>0) 					totFlags += tiles[y-1][x].getFlaged();
+	if(y<height-1) 				totFlags += tiles[y+1][x].getFlaged(); 
+
+	if(x<width-1 && y>0) 		totFlags += tiles[y-1][x+1].getFlaged();
+	if(x<width-1) 				totFlags += tiles[y][x+1].getFlaged();
+	if(x<width-1 && y<height-1) totFlags += tiles[y+1][x+1].getFlaged();
+
+	if(totFlags == tiles[y][x].getType()) return 1;
+	return 0;
+}
+
+
+
+int checkIfWon(){
+	if(flags == bombs && flags+discoveredTiles == width*height)
 		return 1;
 	return 0;
 }

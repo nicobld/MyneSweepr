@@ -8,6 +8,7 @@ extern int discoveredTiles;
 void initTiles(Tile** tiles);
 void blankFinder(Tile** tiles, int, int);
 int discoverAdjTile(Tile** tiles, int, int);
-int checkIfEnded();
+int checkIfWon();
+int hasEnoughFlags(Tile**,int,int);
 
 #endif

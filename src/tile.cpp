@@ -83,3 +83,7 @@ SDL_Rect Tile::getTileImg(){
 int Tile::getDiscovered(){
 	return discovered;
 }
+
+int Tile::getFlaged(){
+	return flaged;
+}

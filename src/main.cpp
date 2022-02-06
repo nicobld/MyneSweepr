@@ -60,85 +60,111 @@ int main(int argc,char* argv[]){
 	}SDL_FreeSurface(gameSurface);
 
 
-
-
-	//tile creation
-	Tile **tiles = (Tile **)malloc(sizeof (Tile* ) * height);
-	for(int i=0;i<height;i++)
-		tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
-	initTiles(tiles);
-
-
 	SDL_Event events;
 	struct MouseEvent mouseEvent;
 	mouseEvent.clicked = 0;
-	int run = 1;
+	int quit = 0;
 
-	while(run && !checkIfEnded()){
+	Tile **tiles = (Tile **)malloc(sizeof (Tile* ) * height);
+	for(int i=0;i<height;i++)
+		tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
+	initTiles(tiles);;
+
+	GameState gameState = START;
+
+	while(!quit){
 		/* EVENT CHECK */
 		while(SDL_PollEvent(&events)){
 			switch(events.type){
 				case SDL_WINDOWEVENT:
 					if(events.window.event == SDL_WINDOWEVENT_CLOSE)
-						run = 0;
+						quit = 1;
 					break;
 				case SDL_MOUSEBUTTONDOWN:
-					mouseEvent.point.x = events.button.x;
-					mouseEvent.point.y = events.button.y;
-					mouseEvent.button = events.button.button;
-					mouseEvent.clicked = 1;
-					mouseEvent.clicks = events.button.clicks;
+					if(gameState == END){
+						gameState = START;
+					} else {
+						mouseEvent.point.x = events.button.x;
+						mouseEvent.point.y = events.button.y;
+						mouseEvent.button = events.button.button;
+						mouseEvent.clicked = 1;
+						mouseEvent.clicks = events.button.clicks;
+					}
 					break;
 				}
 			}
 
+		if(gameState == START){
+			//free the tiles
+			flags = discoveredTiles = 0;
+			for(int i=0;i<height;i++)
+				free(tiles[i]);
+			free(tiles);
 
-		/* RENDERING AND OTHER */
-		SDL_SetRenderDrawColor(renderer,0,0,0,255);
-		SDL_RenderClear(renderer);
+			tiles = (Tile **)malloc(sizeof (Tile* ) * height);
+			for(int i=0;i<height;i++)
+				tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
+			initTiles(tiles);
 
-		for (int j=0;j<height;j++){
-			for (int i=0;i<width;i++){
-				if(mouseEvent.clicked){
-					SDL_Rect temp = tiles[j][i].getTileRect();
-					if(SDL_PointInRect(&mouseEvent.point,&temp)==SDL_TRUE){ //if clicked on the tile
-						if(mouseEvent.button == SDL_BUTTON_LEFT){ 			//if left clicked on tile
-							if(mouseEvent.clicks == 2){
-								if (discoverAdjTile(tiles,i,j) == 1){
-									//run = 0;
-								}
-							}else {
-								int discoverValue = tiles[j][i].discover(); 	//discover it
-								if (discoverValue == 2) 						//if discovered blank
-									blankFinder(tiles,i,j);						//blankFinder algorithm to discover adjacent blanks
-								else if (discoverValue == 1){				//if discovered bomb
-									//run = 0;
-								}
-							}
-						}
-						else if(mouseEvent.button == SDL_BUTTON_RIGHT) 		//if right clicked on tile
-							tiles[j][i].flag();								//flag it
-					}
-				}
-				//Rendering
-				SDL_Rect src = tiles[j][i].getTileImg();
-				SDL_Rect dst = tiles[j][i].getTileRect();
-				SDL_RenderCopy(renderer,gameTexture,&src,&dst);
-			}
+			gameState = PLAY;
 		}
 
-		SDL_RenderPresent(renderer);
-		mouseEvent.clicked = 0;
+		if(gameState == OPTIONS){
+
+		}
+
+		if(gameState == PLAY){
+			/* RENDERING AND OTHER */
+			SDL_SetRenderDrawColor(renderer,0,0,0,255);
+			SDL_RenderClear(renderer);
+
+			for (int j=0;j<height;j++){
+				for (int i=0;i<width;i++){
+					if(mouseEvent.clicked){
+						SDL_Rect temp = tiles[j][i].getTileRect();
+						if(SDL_PointInRect(&mouseEvent.point,&temp)==SDL_TRUE){ //if clicked on the tile
+							if(mouseEvent.button == SDL_BUTTON_LEFT){ 			//if left clicked on tile
+								if(mouseEvent.clicks == 2){
+									if (discoverAdjTile(tiles,i,j) == 1){
+										gameState = END;
+										SDL_Log("lost, left click to restart");
+									}
+								}else {
+									int discoverValue = tiles[j][i].discover(); 	//discover it
+									if (discoverValue == 2) 						//if discovered blank
+										blankFinder(tiles,i,j);						//blankFinder algorithm to discover adjacent blanks
+									else if (discoverValue == 1){					//if discovered bomb
+										gameState = END;
+										SDL_Log("lost, leftclick to restart");
+									}
+								}
+							}
+							else if(mouseEvent.button == SDL_BUTTON_RIGHT) 		//if right clicked on tile
+								tiles[j][i].flag();								//flag it
+						}
+					}
+					//Rendering
+					SDL_Rect src = tiles[j][i].getTileImg();
+					SDL_Rect dst = tiles[j][i].getTileRect();
+					SDL_RenderCopy(renderer,gameTexture,&src,&dst);
+				}
+			}
+
+			SDL_RenderPresent(renderer);
+			mouseEvent.clicked = 0;
+			if (checkIfWon()){
+				gameState = END;
+				SDL_Log("won ! left click to restart");
+			}
+			//SDL_Log("flags:%d, tiles:%d, size:%d",flags,discoveredTiles,width*height);
+		}
+
+
+		if(gameState == END){
+		}
 	}
 
-	if(checkIfEnded())
-		printf("You won !\n");
-	else
-		printf("You lost :(\n");
 
-	for(int i=0;i<height;i++)
-		free(tiles[i]);
-	free(tiles);
 
 	SDL_DestroyTexture(gameTexture);
 	SDL_DestroyRenderer(renderer);
