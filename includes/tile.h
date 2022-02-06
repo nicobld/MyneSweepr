@@ -8,6 +8,7 @@
 
 extern int flags;
 extern int discoveredTiles;
+extern int firstDiscover;
 
 typedef enum Type{
 	BLANK = 0,

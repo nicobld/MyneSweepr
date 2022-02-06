@@ -9,6 +9,7 @@ int height = 10;
 int bombs = 20;
 int flags = 0;
 int discoveredTiles = 0;
+int firstDiscover = 1;
 
 
 struct MouseEvent{
@@ -65,6 +66,7 @@ int main(int argc,char* argv[]){
 	mouseEvent.clicked = 0;
 	int quit = 0;
 
+
 	Tile **tiles = (Tile **)malloc(sizeof (Tile* ) * height);
 	for(int i=0;i<height;i++)
 		tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
@@ -106,6 +108,7 @@ int main(int argc,char* argv[]){
 				tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
 			initTiles(tiles);
 
+			firstDiscover = 1;
 			gameState = PLAY;
 		}
 
@@ -130,13 +133,26 @@ int main(int argc,char* argv[]){
 										SDL_Log("lost, left click to restart");
 									}
 								}else {
-									int discoverValue = tiles[j][i].discover(); 	//discover it
+									int discoverValue = tiles[j][i].discover(); 
+									while(discoverValue == -1){ // To be able to find a blank tile first try every time
+										firstDiscover = 1;
+										flags = discoveredTiles = 0;
+										for(int i=0;i<height;i++)
+											free(tiles[i]);
+										free(tiles);
+
+										tiles = (Tile **)malloc(sizeof (Tile* ) * height);
+										for(int i=0;i<height;i++)
+											tiles[i] = (Tile *)malloc(sizeof (Tile) * width);
+										initTiles(tiles);
+										discoverValue = tiles[j][i].discover();
+									}
 									if (discoverValue == 2) 						//if discovered blank
-										blankFinder(tiles,i,j);						//blankFinder algorithm to discover adjacent blanks
-									else if (discoverValue == 1){					//if discovered bomb
+										blankFinder(tiles,i,j);	
+									if (discoverValue == 1){					//if discovered bomb
 										gameState = END;
 										SDL_Log("lost, leftclick to restart");
-									}
+									} 
 								}
 							}
 							else if(mouseEvent.button == SDL_BUTTON_RIGHT) 		//if right clicked on tile

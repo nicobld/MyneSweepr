@@ -19,6 +19,12 @@ void Tile::setTileImg(int x, int y){
 int Tile::discover(){
 	/* Returns -1 if not discoverable, 0 if not bomb, 1 if bomb */
 	if(discovered || flaged) return 0; //not discoverable
+	if(firstDiscover){
+		if (type != BLANK){
+			return -1;
+		}
+	}
+	firstDiscover = 0;
 	discoveredTiles++;
 	discovered = 1;
 	switch(type){
