@@ -105,14 +105,15 @@ int main(int argc,char* argv[]){
 						if(mouseEvent.button == SDL_BUTTON_LEFT){ 			//if left clicked on tile
 							if(mouseEvent.clicks == 2){
 								if (discoverAdjTile(tiles,i,j) == 1){
-									run = 0;
+									//run = 0;
 								}
 							}else {
 								int discoverValue = tiles[j][i].discover(); 	//discover it
 								if (discoverValue == 2) 						//if discovered blank
 									blankFinder(tiles,i,j);						//blankFinder algorithm to discover adjacent blanks
-								else if (discoverValue == 1) 					//if discovered bomb
-									run = 0;
+								else if (discoverValue == 1){				//if discovered bomb
+									//run = 0;
+								}
 							}
 						}
 						else if(mouseEvent.button == SDL_BUTTON_RIGHT) 		//if right clicked on tile

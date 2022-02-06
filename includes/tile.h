@@ -15,7 +15,11 @@ typedef enum Type{
 	TWO = 2,
 	THREE = 3,
 	FOUR = 4,
-	BOMB = 5
+	FIVE = 5,
+	SIX = 6,
+	SEVEN = 7,
+	EIGHT = 8,
+	BOMB = 9
 }Type;
 
 

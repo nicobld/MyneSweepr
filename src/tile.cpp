@@ -34,6 +34,18 @@ int Tile::discover(){
 		case FOUR:
 			setTileImg(48,0);
 			break;
+		case FIVE:
+			setTileImg(64,0);
+			break;
+		case SIX:
+			setTileImg(80,0);
+			break;
+		case SEVEN:
+			setTileImg(96,0);
+			break;
+		case EIGHT:
+			setTileImg(112,0);
+			break;
 		case BLANK:
 			setTileImg(32,16);
 			return 2; //blank
