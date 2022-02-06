@@ -26,7 +26,7 @@ or
 - [x] Add every number from 4 to 8
 - [ ] Start Menu
 - [ ] End Menu
-- [ ] Restarting
+- [x] Restarting
 - [ ] HighScores
 - [ ] Multiplayer idk
 - [ ] Always start by clicking on a blank
