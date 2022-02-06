@@ -105,7 +105,7 @@ int main(int argc,char* argv[]){
 						if(mouseEvent.button == SDL_BUTTON_LEFT){ 			//if left clicked on tile
 							if(mouseEvent.clicks == 2){
 								if (discoverAdjTile(tiles,i,j) == 1){
-									//run = 0;
+									run = 0;
 								}
 							}else {
 								int discoverValue = tiles[j][i].discover(); 	//discover it
