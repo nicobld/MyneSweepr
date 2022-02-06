@@ -23,7 +23,7 @@ or
 
 - [ ] Timer
 - [ ] Block doubleclick if numer != flags aroud it
-- [ ] Add every number from 4 to 8
+- [x] Add every number from 4 to 8
 - [ ] Start Menu
 - [ ] End Menu
 - [ ] Restarting
