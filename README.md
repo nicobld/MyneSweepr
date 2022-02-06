@@ -22,7 +22,7 @@ or
 ## To Do
 
 - [ ] Timer
-- [ ] Block doubleclick if numer != flags aroud it
+- [x] Block doubleclick if numer != flags aroud it
 - [x] Add every number from 4 to 8
 - [ ] Start Menu
 - [ ] End Menu
