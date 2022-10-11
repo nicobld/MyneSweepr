@@ -5,9 +5,7 @@ First click on tile might be long because of a feature I added that starts the g
 Makes it more convenient to start the game.
 
 ## Requirements
-_-> SDL2_  
-You can install it with Homebrew  
-`brew install SDL2`  
+_SDL2_  
 
 ## Run
 Start by compiling if not compiled  
