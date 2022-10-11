@@ -1,8 +1,5 @@
 # MyneSweepr
-An epic MineSweeper game made in C++ with the SDL2 library.  
-
-First click on tile might be long because of a feature I added that starts the game only if you click on a blank tile.  
-Makes it more convenient to start the game.
+MineSweeper game made in C++ with the SDL2 library.  
 
 ## Requirements
 _SDL2_  
