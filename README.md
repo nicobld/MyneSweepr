@@ -7,15 +7,15 @@ _SDL2_
 ## Run
 Start by compiling if not compiled  
 
-`make`  
+`./build.sh`  
 
-Then to run the game either do  
+To run the server
 
-`./prog "easy/medium"`  
+`./bin/prog_server`  
 
-or  
+To run the client
 
-`./prog <width> <height> <bombs>`  
+`./bin/prog_client`
 
 ## To Do
 
@@ -26,5 +26,5 @@ or
 - [ ] End Menu
 - [x] Restarting
 - [ ] HighScores
-- [ ] Multiplayer idk
-- [x] Always start by clicking on a blank
+- [x] Multiplayer idk
+- <del>[x] Always start by clicking on a blank</del>
