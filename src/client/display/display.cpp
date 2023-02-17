@@ -37,8 +37,8 @@ void Display::update() {
 	char command[BUFSIZE];
 	clock_t time_start;
 	bool started_clock = false;
-	const int trigger = 10; //ms
-	SDL_Rect src, dst, temp;
+	const int trigger = 50; //ms
+	SDL_Rect temp;
 	int i, j;
 
 	while (!quit) {
@@ -50,6 +50,7 @@ void Display::update() {
 			if (((clock() - time_start) * 1000 / CLOCKS_PER_SEC) >= trigger){
 				started_clock = false;
 				state.updateState();
+				render();
 			}
 		}
 
@@ -67,13 +68,19 @@ void Display::update() {
 					mouseEvent.clicks = events.button.clicks;
 
 					break;
+				case SDL_KEYDOWN:
+					if (events.key.keysym.sym == SDLK_LEFT)
+						state.shiftTiles(DIRECTION_LEFT);
+					else if (events.key.keysym.sym == SDLK_RIGHT)
+						state.shiftTiles(DIRECTION_RIGHT);
+					else if (events.key.keysym.sym == SDLK_UP)
+						state.shiftTiles(DIRECTION_UP);
+					else if (events.key.keysym.sym == SDLK_DOWN)
+						state.shiftTiles(DIRECTION_DOWN);
 			}
 		}
-		/* RENDERING AND OTHER */
-		if (SDL_RenderClear(renderer) == -1){
-			SDL_Log("render clear");
-			exit(EXIT_FAILURE);
-		}
+
+		// render();
 
 		if (mouseEvent.clicked){
 			for (j = 0; j < state.height; j++){
@@ -97,19 +104,6 @@ void Display::update() {
 		}
 		exitfor0:
 
-		for (j = 0; j < state.height; j++){
-			for (i = 0; i < state.width; i++){
-				// Rendering
-				src = state.tiles[j*state.height + i].tileImg;
-				dst = state.tiles[j*state.height + i].tileRect;
-				if (SDL_RenderCopy(renderer, gameTexture, &src, &dst) < 0){
-					SDL_Log("error sdl_rendercopy\n");
-					exit(EXIT_FAILURE);
-				}
-			}
-		}
-
-		SDL_RenderPresent(renderer);
 		mouseEvent.clicked = 0;
 	}
 
@@ -117,4 +111,24 @@ void Display::update() {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+}
+
+void Display::render(){
+	SDL_Rect src, dst;
+	int i, j;
+	
+	SDL_RenderClear(renderer);
+	for (j = 0; j < state.height; j++){
+		for (i = 0; i < state.width; i++){
+			// Rendering
+			src = state.tiles[j*state.height + i].tileImg;
+			dst = state.tiles[j*state.height + i].tileRect;
+			if (SDL_RenderCopy(renderer, gameTexture, &src, &dst) < 0){
+				SDL_Log("error sdl_rendercopy\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+	}
+
+	SDL_RenderPresent(renderer);
 }

@@ -15,11 +15,6 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-#define BUFSIZE 2048
-#define PORT 8080
-#define MAX_CONNECTIONS 5
-#define SA struct sockaddr
-
 class Engine;
 class State;
 

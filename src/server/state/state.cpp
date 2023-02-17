@@ -12,11 +12,11 @@ using json = nlohmann::json;
 class Tile;
 
 State::State(){
-	bombs = 10;
+	bombs = 100;
 	flags = 0;
 	discoveredTiles = 0;
-	width = 10;
-	height = 10;
+	width = 30;
+	height = 30;
 	gameState = GAMESTATE_START;
 	if (pthread_mutex_init(&lock, NULL) == -1){
 		error_and_die("pthread_mutex_init\n");

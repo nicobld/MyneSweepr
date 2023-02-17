@@ -14,6 +14,13 @@ typedef enum GameState {
 	GAMESTATE_PAUSE
 } GameState;
 
+typedef enum Direction {
+	DIRECTION_UP,
+	DIRECTION_DOWN,
+	DIRECTION_LEFT,
+	DIRECTION_RIGHT
+} Direction;
+
 class State {
 public:
 	std::vector<Tile> tiles;
@@ -24,5 +31,6 @@ public:
 	bool unserialize(json j);
 	/* sends a GET request to server and updates state */
 	void updateState();
+	void shiftTiles(Direction direction);
 private:
 };
