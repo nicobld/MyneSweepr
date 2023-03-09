@@ -152,7 +152,7 @@ int server_main(){
 	if ((listen(listenfd, 5)) != 0)
 		error_and_die("Listen failed...\n");
 
-	printf("server opened\n");
+	printf("server opened on port %d\n", PORT);
 
 	len = sizeof(clientaddr);
    	int c;

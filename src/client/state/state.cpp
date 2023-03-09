@@ -58,19 +58,8 @@ bool State::unserialize(json js){
 	return changed;
 }
 
-void State::updateState(){
-	char* body;
-	char uri[BUFSIZE];
-	json js;
+void State::updateState(json js){
 
-	strcpy(uri, "/state ");
-
-	if ((body = http_get(uri)) == NULL){
-		printf("body error\n");
-		return;
-	}
-
-	js = json::parse(body);
 	bool changed = unserialize(js);
 
 	Tile* tile;

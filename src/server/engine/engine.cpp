@@ -1,8 +1,11 @@
-#include "engine.h"
-#include <iostream>
 #include <bits/stdc++.h>
+#include <unistd.h>
+
+#include <iostream>
 #include <memory>
 #include <string>
+
+#include "engine.h"
 #include "command.h"
 #include "commandClick.h"
 
@@ -68,6 +71,8 @@ void* Engine::update(){
 		if(state->gameState == GAMESTATE_PAUSE){
 
 		}
+
+		usleep(1000);
 	}
 	return NULL;
 }

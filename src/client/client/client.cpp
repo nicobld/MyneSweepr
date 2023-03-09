@@ -6,15 +6,25 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <queue>
+
 #include "client.h"
+#include "../state/state.h"
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 extern int sockfd;
 extern char buf[BUFSIZE];
 
-void connect_to_server(){
+class State;
+
+Client::Client(State* state) : state(state){
 	struct sockaddr_in servaddr;
+
+	if (pthread_mutex_init(&request_mutex, NULL) == -1){
+		perror("pthread_mutex_init\n");
+		exit(EXIT_FAILURE);
+	}
  
 	// socket create and verification
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -40,10 +50,11 @@ void connect_to_server(){
 }
 
 
-char* http_get(const char* uri){
+std::string Client::http_get(const char* uri){
 	char* b;
 	ssize_t recvsize;
 	json j;
+	std::string s;
 
 	memset(buf, 0, BUFSIZE);
 
@@ -85,11 +96,13 @@ char* http_get(const char* uri){
 	token = strtok_r(NULL, "\n", &saveptr);
 	token += strlen(token) + 1;
 
-	return token;
+	s.assign(token);
+
+	return s;
 }
 
 
-void http_post(char* command){
+void Client::http_post(const char* command){
 	char* b = buf;
 
 	memset(buf, 0, BUFSIZE);
@@ -103,4 +116,46 @@ void http_post(char* command){
 
 	*b = '\0';
 	send(sockfd, buf, strlen(buf) + 1, 0);
+}
+
+void Client::addRequest(std::string request){
+	pthread_mutex_lock(&request_mutex);
+	requests.push(request);
+	pthread_mutex_unlock(&request_mutex);
+}
+
+void* Client::client_thread(){
+	clock_t time_start;
+	bool started_clock = false;
+	const int trigger = CLIENT_REFRESH_PERIOD;
+	const char uri[] = "/state ";
+
+	while(1){
+		if (started_clock == false){
+			started_clock = true;
+			time_start = clock();
+		}
+		else if (((clock() - time_start) * 1000 / CLOCKS_PER_SEC) >= trigger){
+			started_clock = false;
+			json js;
+			std::string body;
+
+			body = http_get(uri);
+			js = json::parse(body);
+
+			state->updateState(js);
+		}
+
+		pthread_mutex_lock(&request_mutex);
+
+		if (requests.empty() == false){
+			http_post(requests.front().data());
+
+			requests.pop();
+		}
+
+		pthread_mutex_unlock(&request_mutex);
+
+		usleep(SLEEP_CLIENT);
+	}
 }

@@ -2,15 +2,19 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <string>
+#include <sstream>
+
 #include "display.h"
 #include "../client/client.h"
 #include "../state/state.h"
 
 class State;
+class Client;
 
-extern State state;
+extern Client* client;
 
-Display::Display(){
+Display::Display(State* state, Client* client) : state(state), client(client){
 	mouseEvent.clicked = 0;
 	quit = false;
 
@@ -34,26 +38,10 @@ Display::Display(){
 }
 
 void Display::update() {
-	char command[BUFSIZE];
-	clock_t time_start;
-	bool started_clock = false;
-	const int trigger = 50; //ms
 	SDL_Rect temp;
 	int i, j;
 
 	while (!quit) {
-		if (!started_clock){
-			started_clock = true;
-			time_start = clock();
-		}
-		else {
-			if (((clock() - time_start) * 1000 / CLOCKS_PER_SEC) >= trigger){
-				started_clock = false;
-				state.updateState();
-				render();
-			}
-		}
-
 		while (SDL_PollEvent(&events)){
 			switch (events.type){
 				case SDL_WINDOWEVENT:
@@ -70,34 +58,37 @@ void Display::update() {
 					break;
 				case SDL_KEYDOWN:
 					if (events.key.keysym.sym == SDLK_LEFT)
-						state.shiftTiles(DIRECTION_LEFT);
+						state->shiftTiles(DIRECTION_LEFT);
 					else if (events.key.keysym.sym == SDLK_RIGHT)
-						state.shiftTiles(DIRECTION_RIGHT);
+						state->shiftTiles(DIRECTION_RIGHT);
 					else if (events.key.keysym.sym == SDLK_UP)
-						state.shiftTiles(DIRECTION_UP);
+						state->shiftTiles(DIRECTION_UP);
 					else if (events.key.keysym.sym == SDLK_DOWN)
-						state.shiftTiles(DIRECTION_DOWN);
+						state->shiftTiles(DIRECTION_DOWN);
 			}
 		}
 
-		// render();
+		render();
 
 		if (mouseEvent.clicked){
-			for (j = 0; j < state.height; j++){
-				for (i = 0; i < state.width; i++){
-					temp = state.tiles[j*state.height + i].tileRect;
+			for (j = 0; j < state->height; j++){
+				for (i = 0; i < state->width; i++){
+					temp = state->tiles[j*state->height + i].tileRect;
 					if (SDL_PointInRect(&mouseEvent.point, &temp) == SDL_TRUE){ // if clicked on the tile
-						int click;
+						int clicks;
 						if (mouseEvent.button == SDL_BUTTON_LEFT)
-							click = 0;
+							clicks = 0;
 						else if (mouseEvent.button == SDL_BUTTON_RIGHT)
-							click = 2;
+							clicks = 2;
 						else
 							goto exitfor0;
 						if (mouseEvent.clicks == 2)
-							click++;
-						sprintf(command, "click-%u-%u-%u", i, j, click);
-						http_post(command);
+							clicks++;
+						
+						//sprintf(command, "click-%u-%u-%u", i, j, clicks);
+						std::ostringstream command;
+						command << "click-" << i << "-" << j << "-" << clicks;
+						client->addRequest(command.str());
 					}
 				}
 			}
@@ -105,6 +96,8 @@ void Display::update() {
 		exitfor0:
 
 		mouseEvent.clicked = 0;
+
+		usleep(SLEEP_DISPLAY);
 	}
 
 	SDL_DestroyTexture(gameTexture);
@@ -118,11 +111,12 @@ void Display::render(){
 	int i, j;
 	
 	SDL_RenderClear(renderer);
-	for (j = 0; j < state.height; j++){
-		for (i = 0; i < state.width; i++){
+
+	for (j = 0; j < state->height; j++){
+		for (i = 0; i < state->width; i++){
 			// Rendering
-			src = state.tiles[j*state.height + i].tileImg;
-			dst = state.tiles[j*state.height + i].tileRect;
+			src = state->tiles[j*state->height + i].tileImg;
+			dst = state->tiles[j*state->height + i].tileRect;
 			if (SDL_RenderCopy(renderer, gameTexture, &src, &dst) < 0){
 				SDL_Log("error sdl_rendercopy\n");
 				exit(EXIT_FAILURE);

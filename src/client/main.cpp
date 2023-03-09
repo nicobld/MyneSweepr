@@ -2,8 +2,10 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include <iostream>
+#include <thread>
 
 #include "state/state.h"
 #include "client/client.h"
@@ -13,7 +15,8 @@ using json = nlohmann::json;
 
 int sockfd;
 char buf[BUFSIZE];
-State state;
+State* state;
+Client* client;
 
 void ctrlc(int){
 	printf("Bye\n");
@@ -27,14 +30,17 @@ void exitfunc(){
 }
 
 int main(){
-	Display display;
-
 	if(signal(SIGINT, ctrlc) == SIG_ERR){
 		ctrlc(0);
 	}
 	atexit(exitfunc);
 
-	connect_to_server();
+	state = new State();
+	client = new Client(state);
+	Display display(state, client);
+
+	// pthread_create(&client_thread, NULL, client->client_thread, NULL);
+	std::thread thread(&Client::client_thread, client);
 
 	display.update();
 

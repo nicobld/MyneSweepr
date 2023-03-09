@@ -28,9 +28,10 @@ public:
 	GameState gameState;
 
 	State();
+	/* Return true if the state has changed */
 	bool unserialize(json j);
 	/* sends a GET request to server and updates state */
-	void updateState();
+	void updateState(json);
 	void shiftTiles(Direction direction);
 private:
 };
