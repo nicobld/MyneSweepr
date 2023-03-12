@@ -9,7 +9,7 @@
 #define PORT 8080
 #define SA struct sockaddr
 #define BUFSIZE 16384
-#define CLIENT_REFRESH_PERIOD 50 //ms
+#define CLIENT_REFRESH_PERIOD 20 //ms
 #define SLEEP_CLIENT 10000
 
 class State;

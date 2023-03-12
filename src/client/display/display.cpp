@@ -4,6 +4,8 @@
 
 #include <string>
 #include <sstream>
+#include <chrono>
+#include <iostream>
 
 #include "display.h"
 #include "../client/client.h"
@@ -17,6 +19,7 @@ extern Client* client;
 Display::Display(State* state, Client* client) : state(state), client(client){
 	mouseEvent.clicked = 0;
 	quit = false;
+	lastRender = 0;
 
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0){
 		ERROR_EXIT_SDL;
@@ -68,8 +71,6 @@ void Display::update() {
 			}
 		}
 
-		render();
-
 		if (mouseEvent.clicked){
 			for (j = 0; j < state->height; j++){
 				for (i = 0; i < state->width; i++){
@@ -94,8 +95,9 @@ void Display::update() {
 			}
 		}
 		exitfor0:
-
 		mouseEvent.clicked = 0;
+
+		render();
 
 		usleep(SLEEP_DISPLAY);
 	}
@@ -123,6 +125,11 @@ void Display::render(){
 			}
 		}
 	}
-
 	SDL_RenderPresent(renderer);
+	auto now = std::chrono::system_clock::now();
+    auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+	std::cout << "\r                     \r";
+	std::cout << "FPS : " << (int) (1 / ((millis - lastRender) / 1000.0)) << std::flush;
+	lastRender = millis;
 }

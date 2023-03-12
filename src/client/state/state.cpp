@@ -25,16 +25,16 @@ State::State() {
 
 bool State::unserialize(json js){
 	json tiles_json;
-	bool changed = false;
+	bool new_game = false;
 	for (auto it = js.begin(); it != js.end(); it++){
 		if (it.key() == "width"){
 			if (width != it.value())
-				changed = true;
+				new_game = true;
 			width = it.value();
 		}
 		else if (it.key() == "height"){
 			if (height != it.value()) 
-				changed = true;
+				new_game = true;
 			height = it.value();
 		}
 		else if (it.key() == "gameState"){
@@ -45,7 +45,7 @@ bool State::unserialize(json js){
 		}
 	}
 
-	if (changed){
+	if (new_game){
 		tiles.resize(width*height);
 	}
 
@@ -55,19 +55,19 @@ bool State::unserialize(json js){
 		}
 	}
 
-	return changed;
+	return new_game;
 }
 
 void State::updateState(json js){
 
-	bool changed = unserialize(js);
+	bool new_game = unserialize(js);
 
 	Tile* tile;
 	for (int j = 0; j < height; j++){
 		for (int i = 0; i < width; i++){
 			tile = &tiles[j*height + i];
 			tile->tileImg = {(int)tile->tileType*TILE_IMG_SIZE, 0, TILE_IMG_SIZE, TILE_IMG_SIZE};
-			if (changed) tile->tileRect = {i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE};
+			if (new_game) tile->tileRect = {i*TILE_SIZE, j*TILE_SIZE, TILE_SIZE, TILE_SIZE};
 		}
 	}
 }

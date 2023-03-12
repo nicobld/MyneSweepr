@@ -1,11 +1,14 @@
 #pragma once
 #include <SDL2/SDL.h>
+
+#include <chrono>
+
 #include "../state/state.h"
 
 #define WINDOW_WIDTH 50*16
 #define WINDOW_HEIGHT 50*16
 
-#define SLEEP_DISPLAY 10000
+#define SLEEP_DISPLAY 20*1000
 
 #define ERROR_EXIT_SDL SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "%s", SDL_GetError()); \
 	exit(EXIT_FAILURE); \
@@ -37,4 +40,6 @@ private:
 	SDL_Texture* gameTexture;
 	SDL_Event events;
 	struct MouseEvent mouseEvent;
+
+	long int lastRender;
 };

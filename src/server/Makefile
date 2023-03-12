@@ -10,7 +10,7 @@ $(PROG): $(LIST)
 	$(CC) $(OBJS) -o $@ $(CFLAGS) $(CPPFLAGS) $(LIBS)
 
 %.o : %.cpp
-	$(CC) -c $< -o $@ $(CFLAGS) $(CPPFLAGS) $(LIBS) -MD
+	$(CC) -c $< -o $@ $(CFLAGS) $(CPPFLAGS) $(LIBS) -MMD
 
 clean:
 	rm -f $(OBJS)
