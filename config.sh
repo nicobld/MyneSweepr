@@ -3,6 +3,6 @@
 export CC=g++
 
 export MAKEFLAGS='-j'
-export CPPFLAGS="-Wall -Wextra"
-export CFLAGS="-I../../libs/include -O3 -std=c++14"
-export LIBS="-lpthread"
+export CPPFLAGS="-I../../libs/include"
+export CFLAGS="-O3 -std=c++14 -Wall -Wextra"
+export LDLIBS="-lpthread"
