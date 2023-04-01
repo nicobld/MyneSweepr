@@ -1,0 +1,12 @@
+High-Level TODO:
+	--Add a networking lib instead of raw sockets
+	Assign flags to players so no one else can touch them
+	Load only the part of the map we can see
+	CLI for server to customize it
+	Server duration of map until reset
+	Better client graphics (interactive stuff)
+	WASM
+
+Low-Level TODO:
+	--add gameid
+	--Change window size

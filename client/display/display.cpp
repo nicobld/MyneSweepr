@@ -25,7 +25,7 @@ Display::Display(State* state, Client* client) : state(state), client(client){
 		ERROR_EXIT_SDL;
 	}
 
-	if(SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer) == -1){
+	if(SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, &window, &renderer) == -1){
 		ERROR_EXIT_SDL;
 	}
 	SDL_SetWindowTitle(window, "MyneSweepr");
