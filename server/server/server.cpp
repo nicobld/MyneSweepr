@@ -93,8 +93,6 @@ static void* handle_client(void* arg){
 
 		buf[BUFSIZE - 1] = '\0';
 
-		// printf("client %lu: %s\n", client_info->thread_id, buf);
-
 		if (strncmp(buf, "GET ", 4) == 0){
 
 			if (handle_GET(buf) == false)
@@ -142,9 +140,9 @@ int server_main(){
 	}
 
 	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	serveraddr.sin_port = htons(PORT);
+	serveraddr.sin_family = 		AF_INET;
+	serveraddr.sin_addr.s_addr = 	htonl(INADDR_ANY);
+	serveraddr.sin_port = 			htons(PORT);
    
 	if ((bind(listenfd, (SA*)&serveraddr, sizeof(serveraddr))) == -1)
 		error_and_die("socket bind failed...\n");
@@ -152,7 +150,9 @@ int server_main(){
 	if ((listen(listenfd, 5)) != 0)
 		error_and_die("Listen failed...\n");
 
-	printf("server opened on port %d\n", PORT);
+	socklen_t getsocknamelen;
+	getsockname(listenfd, (SA*)&serveraddr, &getsocknamelen);
+	printf("Server opened on port %d\n", serveraddr.sin_port);
 
 	len = sizeof(clientaddr);
    	int c;

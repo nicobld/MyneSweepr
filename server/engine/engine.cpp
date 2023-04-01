@@ -80,12 +80,12 @@ void* Engine::update(){
 
 void Engine::initTiles(){
 	pthread_mutex_lock(&state->lock);
-	state->tiles = (Tile**) malloc(sizeof (Tile* ) * state->height);
+	state->tiles = (Tile**) malloc(sizeof (Tile*) * state->height);
 	for(int i = 0; i < state->height; i++)
 		state->tiles[i] = (Tile*) malloc(sizeof (Tile) * state->width);
 
-	int bt[state->height][state->width]; //bombTable
-	memset(bt, 0, sizeof(bt));
+	int bombTable[state->height][state->width];
+	memset(bombTable, 0, sizeof(bombTable));
 
 	int randHeight;
 	int randWidth;
@@ -93,26 +93,26 @@ void Engine::initTiles(){
 	for(int i = 0; i < state->bombs; i++){
 		randHeight = rand()%state->height;
 		randWidth = rand()%state->width;
-		if(bt[randHeight][randWidth] == 1)
+		if(bombTable[randHeight][randWidth] == 1)
 			i--;
 		else
-			bt[randHeight][randWidth] = 1;
+			bombTable[randHeight][randWidth] = 1;
 	}
 
 	int bombCount = 0;
 	for(int y = 0; y < state->height; y++){
 		for(int x = 0; x < state->width; x++){
-			if(!bt[y][x]){
-				if(x > 0 && y > 0)			bombCount += bt[y-1][x-1];
-				if(x > 0)					bombCount += bt[y][x-1];
-				if(x > 0 && y < state->height-1)		bombCount += bt[y+1][x-1];
+			if(!bombTable[y][x]){
+				if(x > 0 && y > 0)								bombCount += bombTable[y-1][x-1];
+				if(x > 0)										bombCount += bombTable[y][x-1];
+				if(x > 0 && y < state->height-1)				bombCount += bombTable[y+1][x-1];
 
-				if(y > 0)					bombCount += bt[y-1][x];
-				if(y < state->height-1)				bombCount += bt[y+1][x]; 
+				if(y > 0)										bombCount += bombTable[y-1][x];
+				if(y < state->height-1)							bombCount += bombTable[y+1][x]; 
 
-				if(x < state->width-1 && y > 0)		bombCount += bt[y-1][x+1];
-				if(x < state->width-1)		bombCount += bt[y][x+1];
-				if(x < state->width-1 && y < state->height-1)	bombCount += bt[y+1][x+1];
+				if(x < state->width-1 && y > 0)					bombCount += bombTable[y-1][x+1];
+				if(x < state->width-1)							bombCount += bombTable[y][x+1];
+				if(x < state->width-1 && y < state->height-1)	bombCount += bombTable[y+1][x+1];
 
 				state->tiles[y][x] = Tile((TileType)bombCount);
 			} else {

@@ -20,7 +20,7 @@ bool CommandClick::unserialize(std::string string){
 	try {
 		if (tokens.size() == 4){
 			column  =   (ClickType) stoi(tokens[1]);
-			row	 =   (ClickType) stoi(tokens[2]);
+			row	 	=   (ClickType) stoi(tokens[2]);
 			click   =   (ClickType) stoi(tokens[3]);
 		} else {
 			std::cerr << "ENGINE " << __PRETTY_FUNCTION__ << " : Invalid number of arguments\n";
@@ -28,7 +28,7 @@ bool CommandClick::unserialize(std::string string){
 		}
 	}
 	catch (const std::invalid_argument& ia) {
-	 std::cerr << "ENGINE " << __PRETTY_FUNCTION__ << " : Invalid argument: " << ia.what() << '\n';
+		std::cerr << "ENGINE " << __PRETTY_FUNCTION__ << " : Invalid argument: " << ia.what() << '\n';
 		return false;
 	}
 
@@ -78,14 +78,14 @@ void CommandClick::blankFinder(int x, int y){
 			blankFinder(x, y-1); //if it's a blank not already discovered, then blankFinder on it
 		}
 		if (state->tiles[y-1][x].getTileType() != TILE_BLANK){ //if it's not a blank then discover it (it's 100% not a bomb) <- ?????
-	state->tiles[y-1][x].discover(state);
-	if(x > 0){ //then check for the tile that is diagonaly up left (turn counter clockwise)
-		if(state->tiles[y-1][x-1].getTileType() == TILE_BLANK && !state->tiles[y-1][x-1].getDiscovered()) //if its a blank, blankFinder
-			blankFinder(x-1, y-1);
-		else //else it's a number
-			state->tiles[y-1][x-1].discover(state);
-	}
+			state->tiles[y-1][x].discover(state);
+			if(x > 0){ //then check for the tile that is diagonaly up left (turn counter clockwise)
+				if(state->tiles[y-1][x-1].getTileType() == TILE_BLANK && !state->tiles[y-1][x-1].getDiscovered()) //if its a blank, blankFinder
+					blankFinder(x-1, y-1);
+				else //else it's a number
+					state->tiles[y-1][x-1].discover(state);
 			}
+		}
 	}
 	if (x < state->width-1){//RIGHT
 		if (state->tiles[y][x+1].getTileType() == TILE_BLANK && !state->tiles[y][x+1].getDiscovered()){
@@ -93,11 +93,11 @@ void CommandClick::blankFinder(int x, int y){
 		}
 		if (state->tiles[y][x+1].getTileType() != TILE_BLANK){
 			state->tiles[y][x+1].discover(state);
-			if(y>0){
-	if(state->tiles[y-1][x+1].getTileType() == TILE_BLANK && !state->tiles[y-1][x+1].getDiscovered())
-		blankFinder(x+1, y-1);
-	else
-		state->tiles[y-1][x+1].discover(state);
+			if(y > 0){
+				if(state->tiles[y-1][x+1].getTileType() == TILE_BLANK && !state->tiles[y-1][x+1].getDiscovered())
+					blankFinder(x+1, y-1);
+				else
+					state->tiles[y-1][x+1].discover(state);
 			}
 		}
 	}
@@ -108,10 +108,10 @@ void CommandClick::blankFinder(int x, int y){
 		if (state->tiles[y+1][x].getTileType() != TILE_BLANK){
 			state->tiles[y+1][x].discover(state);
 			if(x < state->width-1){
-	if(state->tiles[y+1][x+1].getTileType() == TILE_BLANK && !state->tiles[y+1][x+1].getDiscovered())
-		blankFinder(x+1, y+1);
-	else
-		state->tiles[y+1][x+1].discover(state);
+				if(state->tiles[y+1][x+1].getTileType() == TILE_BLANK && !state->tiles[y+1][x+1].getDiscovered())
+					blankFinder(x+1, y+1);
+				else
+					state->tiles[y+1][x+1].discover(state);
 			}
 		}
 
@@ -123,10 +123,10 @@ void CommandClick::blankFinder(int x, int y){
 		if (state->tiles[y][x-1].getTileType()){
 			state->tiles[y][x-1].discover(state);
 			if(y < state->height-1){
-	if(state->tiles[y+1][x-1].getTileType() == TILE_BLANK && !state->tiles[y+1][x-1].getDiscovered())
-		blankFinder(x-1, y+1);
-	else
-		state->tiles[y+1][x-1].discover(state);
+				if(state->tiles[y+1][x-1].getTileType() == TILE_BLANK && !state->tiles[y+1][x-1].getDiscovered())
+					blankFinder(x-1, y+1);
+				else
+					state->tiles[y+1][x-1].discover(state);
 			}
 		}
 	
@@ -187,16 +187,16 @@ int CommandClick::discoverAdjTile(int x, int y){
 int CommandClick::hasEnoughFlags(int x, int y){
 	int totFlags = 0;
 
-	if(x > 0 && y > 0)		totFlags += state->tiles[y-1][x-1].getFlaged();
-	if(x > 0)				totFlags += state->tiles[y][x-1].getFlaged();
-	if(x > 0 && y < state->height-1) 		totFlags += state->tiles[y+1][x-1].getFlaged();
+	if(x > 0 && y > 0)								totFlags += state->tiles[y-1][x-1].getFlaged();
+	if(x > 0)										totFlags += state->tiles[y][x-1].getFlaged();
+	if(x > 0 && y < state->height-1) 				totFlags += state->tiles[y+1][x-1].getFlaged();
 
-	if(y > 0)				totFlags += state->tiles[y-1][x].getFlaged();
-	if(y < state->height-1)		totFlags += state->tiles[y+1][x].getFlaged(); 
+	if(y > 0)										totFlags += state->tiles[y-1][x].getFlaged();
+	if(y < state->height-1)							totFlags += state->tiles[y+1][x].getFlaged(); 
 
-	if(x < state->width-1 && y > 0) 		totFlags += state->tiles[y-1][x+1].getFlaged();
-	if(x < state->width-1)		totFlags += state->tiles[y][x+1].getFlaged();
-	if(x < state->width-1 && y < state->height-1) totFlags += state->tiles[y+1][x+1].getFlaged();
+	if(x < state->width-1 && y > 0) 				totFlags += state->tiles[y-1][x+1].getFlaged();
+	if(x < state->width-1)							totFlags += state->tiles[y][x+1].getFlaged();
+	if(x < state->width-1 && y < state->height-1) 	totFlags += state->tiles[y+1][x+1].getFlaged();
 
 	if(totFlags == state->tiles[y][x].getTileType()) return 1;
 	return 0;

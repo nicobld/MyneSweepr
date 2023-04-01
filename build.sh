@@ -2,11 +2,11 @@
 set -e
 . ./config.sh
 
-make -C src/client ${MAKEFLAGS}
-make -C src/server ${MAKEFLAGS}
+make -C client ${MAKEFLAGS}
+make -C server ${MAKEFLAGS}
 
 mkdir -p bin
-cp src/client/client_MyneSweepr bin/
-cp src/server/server_MyneSweepr bin/
+cp client/client_MyneSweepr bin/
+cp server/server_MyneSweepr bin/
 
 echo "build finished"

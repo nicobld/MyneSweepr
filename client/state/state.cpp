@@ -6,9 +6,10 @@ using json = nlohmann::json;
 #include "../client/client.h"
 
 State::State() {
-	width = -1;
-	height = -1;
+	width = 0;
+	height = 0;
 	gameState = GAMESTATE_PLAY;
+	gameID = 0;
 
 	tiles.resize(width*height);
 
@@ -26,23 +27,18 @@ State::State() {
 bool State::unserialize(json js){
 	json tiles_json;
 	bool new_game = false;
-	for (auto it = js.begin(); it != js.end(); it++){
-		if (it.key() == "width"){
-			if (width != it.value())
-				new_game = true;
-			width = it.value();
+	try {
+		gameState = js["gameState"];
+		tiles_json = js["tiles"];
+		width = js["width"];
+		height = js["height"];
+		int id;
+		if ((id = js["gameID"]) != gameID){
+			new_game = true;
+			gameID = id;
 		}
-		else if (it.key() == "height"){
-			if (height != it.value()) 
-				new_game = true;
-			height = it.value();
-		}
-		else if (it.key() == "gameState"){
-			gameState = it.value();
-		}
-		else if (it.key() == "tiles"){
-			tiles_json = it.value();
-		}
+	} catch (const std::exception&) {
+		return false;
 	}
 
 	if (new_game){

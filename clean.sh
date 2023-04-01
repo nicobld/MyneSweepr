@@ -2,7 +2,7 @@
 set -e
 . ./config.sh
 
-make -C src/server clean ${MAKEFLAGS}
-make -C src/client clean ${MAKEFLAGS}
+make -C server clean ${MAKEFLAGS}
+make -C client clean ${MAKEFLAGS}
 
 rm -rf bin/

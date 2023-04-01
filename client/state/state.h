@@ -26,6 +26,7 @@ public:
 	std::vector<Tile> tiles;
 	int width, height;
 	GameState gameState;
+	int gameID;
 
 	State();
 	/* Return true if the state has changed */

@@ -18,6 +18,7 @@ State::State(){
 	width = 30;
 	height = 30;
 	gameState = GAMESTATE_START;
+	while ((gameID = rand()) == 0);
 	if (pthread_mutex_init(&lock, NULL) == -1){
 		error_and_die("pthread_mutex_init\n");
 	}
@@ -96,6 +97,7 @@ json State::serializeJSON(){
 	j["width"] = width;
 	j["height"] = height;
 	j["gameState"] = gameState;
+	j["gameID"] = gameID;
 
 	std::vector<int> vec;
 	for (int j = 0; j < height; j++){

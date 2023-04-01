@@ -90,6 +90,7 @@ void Display::update() {
 						std::ostringstream command;
 						command << "click-" << i << "-" << j << "-" << clicks;
 						client->addRequest(command.str());
+						goto exitfor0;
 					}
 				}
 			}

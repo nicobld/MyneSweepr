@@ -25,9 +25,11 @@ public:
 	int height;
 	GameState gameState;
 	pthread_mutex_t lock;
+	int gameID;
 
 	State();
 	void displayTiles();
 	json serializeJSON();
+	void reinitState();
 private:
 };

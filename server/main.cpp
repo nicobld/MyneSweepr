@@ -2,6 +2,8 @@
 #include <signal.h>
 
 #include <memory>
+#include <cstdlib>
+#include <ctime>
 
 #include "server/server.h"
 #include "engine/engine.h"
@@ -23,6 +25,8 @@ void* launch_engine(__attribute__((unused)) void* arg){
 
 int main(){
 	pthread_t thread_engine;
+	std::srand(std::time(nullptr));
+
 	engine.state = &state;
 	
 	if(signal(SIGINT, ctrlc) == SIG_ERR){
