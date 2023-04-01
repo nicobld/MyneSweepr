@@ -5,10 +5,10 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "server/server.h"
 #include "engine/engine.h"
 #include "state/state.h"
 #include "common.h"
+#include <httplib/httplib.h>
 
 class Engine;
 class State;
@@ -33,11 +33,19 @@ int main(){
 		ctrlc(0);
 	}
 
-	srand(time(NULL));
-
 	pthread_create(&thread_engine, NULL, launch_engine, NULL);
-	
-	server_main();
+
+	httplib::Server srv;
+
+	srv.Get("/state", [](const httplib::Request& req, httplib::Response& res) {
+		res.set_content(state.serializeJSON().dump(), "application/json");
+	});
+
+	srv.Post("/", [](const httplib::Request& req, httplib::Response& res) {
+		engine.pushCommand(req.body);
+	});
+
+	srv.listen("localhost", 8080);
 
 	return 0;
 }

@@ -130,7 +130,7 @@ void Display::render(){
 	auto now = std::chrono::system_clock::now();
     auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
-	std::cout << "\r                     \r";
-	std::cout << "FPS : " << (int) (1 / ((millis - lastRender) / 1000.0)) << std::flush;
+	// std::cout << "\r                     \r";
+	// std::cout << "FPS : " << (int) (1 / ((millis - lastRender) / 1000.0)) << std::flush;
 	lastRender = millis;
 }
