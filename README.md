@@ -1,5 +1,5 @@
 # MyneSweepr
-MineSweeper game made in C++ with the SDL2 library.  
+Multiplayer minesweeper game made in C++ with the SDL2 library.  
 
 ## Requirements
 _SDL2_  
@@ -11,11 +11,11 @@ Start by compiling if not compiled
 
 To run the server
 
-`./bin/prog_server`  
+`./bin/server_MyneSweepr`  
 
 To run the client
 
-`./bin/prog_client`
+`./bin/client_MyneSweepr`
 
 ## To Do
 
