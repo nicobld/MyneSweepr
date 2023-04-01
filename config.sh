@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export CC=g++
+export CC="zig c++ -iquote /usr/include/SDL2/" 
+export CC="g++"
 
 export PREFIX="$(pwd)"
 
