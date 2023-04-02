@@ -1,9 +1,9 @@
-#include <bits/stdc++.h>
 #include <unistd.h>
 
 #include <iostream>
 #include <memory>
 #include <string>
+#include <sstream>
 
 #include "engine.h"
 #include "command.h"

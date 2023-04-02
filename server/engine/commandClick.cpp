@@ -1,5 +1,7 @@
 #include <string>
-#include <bits/stdc++.h>
+#include <iostream>
+#include <sstream>
+
 #include "commandClick.h"
 
 CommandClick::CommandClick(State* state) {

@@ -41,11 +41,13 @@ void* Client::client_thread(){
 	const char uri[] = "/state ";
 
 	while(1){
+		std::cout << "client_thread\n";
 		if (started_clock == false){
 			started_clock = true;
 			time_start = clock();
 		}
 		else if (((clock() - time_start) * 1000 / CLOCKS_PER_SEC) >= trigger){
+			std::cout << "tick" << std::endl;
 			started_clock = false;
 			json js;
 			std::string body;

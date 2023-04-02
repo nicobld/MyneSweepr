@@ -5,7 +5,7 @@
 #include <pthread.h>
 
 #include <iostream>
-#include <thread>
+// #include <thread>
 
 #include "state/state.h"
 #include "client/client.h"
@@ -30,6 +30,11 @@ void exitfunc(){
 	printf("atexit\n");
 }
 
+static void* launch_client(__attribute__((unused)) void* arg){
+	client->client_thread();
+	pthread_exit(NULL);
+}
+
 int main(int argc, char* argv[]){
 	if(signal(SIGINT, ctrlc) == SIG_ERR){
 		ctrlc(0);
@@ -44,12 +49,22 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+	std::cout << "Hello, world!" << std::endl;
+
 	state = new State();
 	client = new Client(state);
 	if (!no_display)
 		display = new Display(state, client);
 
-	std::thread thread(&Client::client_thread, client);
+	std::cout << "1\n";
+
+	pthread_t threadid;
+  
+    // pthread_create(&threadid, NULL, &launch_client, NULL);
+
+	// std::thread thread(&Client::client_thread, client);
+
+	std::cout << "2\n";
 
 	if (!no_display)
 		display->update();

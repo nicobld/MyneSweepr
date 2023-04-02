@@ -1,5 +1,5 @@
 PROG=server_MyneSweepr
-
+CC=g++ -pthread
 
 INCLUDES=$(shell find . -name "*.h")
 OBJS=$(subst .cpp,.o,$(shell find . -name "*.cpp"))

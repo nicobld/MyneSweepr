@@ -28,6 +28,7 @@ Display::Display(State* state, Client* client) : state(state), client(client){
 	if(SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE, &window, &renderer) == -1){
 		ERROR_EXIT_SDL;
 	}
+
 	SDL_SetWindowTitle(window, "MyneSweepr");
 
 	if((gameSurface = SDL_LoadBMP("img/textures.bmp")) == NULL){
@@ -36,7 +37,7 @@ Display::Display(State* state, Client* client) : state(state), client(client){
 
 	if((gameTexture = SDL_CreateTextureFromSurface(renderer, gameSurface)) == NULL){
 		ERROR_EXIT_SDL;
-	} 
+	}
 	SDL_FreeSurface(gameSurface);
 }
 
@@ -45,6 +46,7 @@ void Display::update() {
 	int i, j;
 
 	while (!quit) {
+		std::cout << "display\n";
 		while (SDL_PollEvent(&events)){
 			switch (events.type){
 				case SDL_WINDOWEVENT:
